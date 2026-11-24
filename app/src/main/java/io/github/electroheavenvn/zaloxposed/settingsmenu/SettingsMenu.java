@@ -14,6 +14,7 @@ import io.github.electroheavenvn.zaloxposed.hooks.custommenu.TabMeSettingItemHel
 import io.github.electroheavenvn.zaloxposed.hooks.custommenu.ZButtonHelper;
 import io.github.electroheavenvn.zaloxposed.hooks.functional.ConfigImportExportHook;
 import io.github.electroheavenvn.zaloxposed.hooks.functional.CustomCallRingtoneHook;
+import io.github.electroheavenvn.zaloxposed.hooks.ui.AccentColorDialog;
 import io.github.electroheavenvn.zaloxposed.hooks.ui.CustomBackgroundHook;
 import io.github.electroheavenvn.zaloxposed.utilities.Config;
 import io.github.electroheavenvn.zaloxposed.utilities.DexKitCache;
@@ -66,6 +67,15 @@ public final class SettingsMenu
                     int count = CustomBackgroundHook.getCustomImageCount();
                     return count == 0 ? S.tr("bgImageCountEmpty") : S.tr("bgImageCount", count);
                 }, true)
+            )),
+            new SettingSubCategory("bgSourceTitle", List.of(
+                new NumberSettingFeature("bgOpacityTitle", "", Config.KEY_BG_OPACITY),
+                new NumberSettingFeature("bgBlurTitle", "", Config.KEY_BG_BLUR),
+                new ListSelectionSettingFeature("bgSourceTitle", "", Config.KEY_BACKGROUND_SOURCE, List.of(
+                    new ListSelectionSettingFeature.Selection("bgSourceAssets", Config.BG_SOURCE_ASSETS),
+                    new ListSelectionSettingFeature.Selection("bgSourcePicker", Config.BG_SOURCE_PICKER),
+                    new ListSelectionSettingFeature.Selection("bgSourceFolder", Config.BG_SOURCE_FOLDER)
+                ))
             ))
         )));
         settingItems.add(new SettingCategory("callRingtoneCategoryTitle", "callRingtoneCategoryDesc", List.of(
@@ -78,6 +88,10 @@ public final class SettingsMenu
                     int count = CustomCallRingtoneHook.getCustomFileCount();
                     return count == 0 ? S.tr("ringtoneFileCountEmpty") : S.tr("ringtoneFileCount", count);
                 }, true)
+            )),
+            new SettingSubCategory("mediaFeaturesSubCategoryTitle", List.of(
+                new SwitchSettingFeature("autoRecordCallsTitle", "", Config.KEY_ENABLE_CALL_RECORDING),
+                new SwitchSettingFeature("customSoundsTitle", "", Config.KEY_CUSTOM_SOUNDS)
             ))
         )));
         settingItems.add(new Separator());
@@ -105,12 +119,28 @@ public final class SettingsMenu
                 new SwitchSettingFeature("defaultOriginalQualityForPastedImagesTitle", "defaultOriginalQualityForPastedImagesDesc", Config.KEY_DEFAULT_ORIGINAL_QUALITY_PASTED),
                 new SwitchSettingFeature("defaultOriginalQualityShareTitle", "defaultOriginalQualityShareDesc", Config.KEY_DEFAULT_ORIGINAL_QUALITY_SHARE),
                 new SwitchSettingFeature("defaultOriginalQualityCameraTitle", "defaultOriginalQualityCameraDesc", Config.KEY_DEFAULT_ORIGINAL_QUALITY_CAMERA)
+            )),
+            new SettingSubCategory("mediaFeaturesSubCategoryTitle", List.of(
+                new SwitchSettingFeature("preferOriginalPhotoTitle", "", Config.KEY_PREFER_ORIGINAL_PHOTO),
+                new SwitchSettingFeature("enableDownloadTitle", "", Config.KEY_ENABLE_DOWNLOAD),
+                new SwitchSettingFeature("keepExpiredMediaTitle", "", Config.KEY_KEEP_EXPIRED_MEDIA),
+                new SwitchSettingFeature("blockMessageEffectTitle", "", Config.KEY_BLOCK_MESSAGE_EFFECT),
+                new SwitchSettingFeature("blockStickerEffectTitle", "", Config.KEY_BLOCK_STICKER_EFFECT),
+                new SwitchSettingFeature("unlockChatReactionTitle", "", Config.KEY_UNLOCK_CHAT_REACTION)
             ))
         )));
         settingItems.add(new SettingCategory("privacyCategoryTitle", "privacyCategoryDesc", List.of(
             new SettingSubCategory("privacyStatusControlSubCategoryTitle", List.of(
                 new SwitchSettingFeature("silentTypingTitle", "", Config.KEY_ENABLE_SILENT_TYPING),
                 new SwitchSettingFeature("blockSendSeenTitle", "", Config.KEY_BLOCK_SEND_SEEN)
+            )),
+            new SettingSubCategory("mediaFeaturesSubCategoryTitle", List.of(
+                new SwitchSettingFeature("viewStoriesAnonymouslyTitle", "", Config.KEY_VIEW_STORIES_ANONYMOUSLY),
+                new SwitchSettingFeature("openLinksExternallyTitle", "", Config.KEY_OPEN_LINKS_EXTERNALLY)
+            )),
+            new SettingSubCategory("privacyStatusControlSubCategoryTitle", List.of(
+                new SwitchSettingFeature("passcodeGraceTitle", "", Config.KEY_PASSCODE_GRACE),
+                new NumberSettingFeature("passcodeGraceMsTitle", "", Config.KEY_PASSCODE_GRACE_MS)
             ))
         )));
         settingItems.add(new SettingCategory("adsAndTrackingCategoryTitle", "adsAndTrackingCategoryDesc", List.of(
@@ -119,12 +149,20 @@ public final class SettingsMenu
                 new SwitchSettingFeature("hideBizBoxTitle", "", Config.KEY_HIDE_BIZ_BOX),
                 new SwitchSettingFeature("hideZInstantAdsTitle", "hideZInstantAdsDesc", Config.KEY_HIDE_Z_INSTANT_ADS),
                 new SwitchSettingFeature("hideTimelineAdsTitle", "", Config.KEY_HIDE_FEED_ITEM_Z_INSTANT_ADS),
-                new SwitchSettingFeature("blockAdsEndpointsTitle", "", Config.KEY_BLOCK_ADS_ENDPOINTS)
+                new SwitchSettingFeature("blockAdsEndpointsTitle", "", Config.KEY_BLOCK_ADS_ENDPOINTS),
+                new SwitchSettingFeature("sponsoredPlacementsTitle", "", Config.KEY_DISABLE_SPONSORED_PLACEMENTS),
+                new SwitchSettingFeature("disableAdIdTitle", "", Config.KEY_DISABLE_AD_ID),
+                new SwitchSettingFeature("hideFeedAdsTitle", "", Config.KEY_HIDE_FEED_ADS),
+                new SwitchSettingFeature("hideMessageAdsTitle", "", Config.KEY_HIDE_MESSAGE_ADS),
+                new SwitchSettingFeature("hideVideoPromosTitle", "", Config.KEY_HIDE_VIDEO_PROMOS),
+                new SwitchSettingFeature("hideZcloudBannerTitle", "", Config.KEY_HIDE_ZCLOUD_BANNER)
             )),
             new SettingSubCategory("logTrackSubCategoryTitle", List.of(
                 new SwitchSettingFeature("disableFirebaseLoggingTitle", "", Config.KEY_DISABLE_FIREBASE_LOGGING),
                 new SwitchSettingFeature("disableZaloTrackingTitle", "", Config.KEY_DISABLE_ZALO_TRACKING),
-                new SwitchSettingFeature("blockQosEndpointsTitle", "", Config.KEY_BLOCK_ZALO_QOS)
+                new SwitchSettingFeature("blockQosEndpointsTitle", "", Config.KEY_BLOCK_ZALO_QOS),
+                new SwitchSettingFeature("disableFirebaseAnalyticsTitle", "", Config.KEY_DISABLE_FIREBASE_ANALYTICS),
+                new SwitchSettingFeature("disableCrashlyticsTitle", "", Config.KEY_DISABLE_CRASHLYTICS)
             ))
         )));
         settingItems.add(new SettingCategory("uiCategoryTitle", "uiCategoryDesc", List.of(
@@ -141,7 +179,12 @@ public final class SettingsMenu
                 new SwitchSettingFeature("showMoreTabTitle", "", Config.KEY_SHOW_MORE_TAB)
             )),
             new SettingSubCategory("uiCategoryTitle", List.of(
-                new SwitchSettingFeature("liquidGlassTabBarTitle", "liquidGlassTabBarDesc", Config.KEY_ENABLE_LIQUID_GLASS_TABBAR)
+                new SwitchSettingFeature("liquidGlassTabBarTitle", "liquidGlassTabBarDesc", Config.KEY_ENABLE_LIQUID_GLASS_TABBAR),
+                new SwitchSettingFeature("liquidTabBarTitle", "", Config.KEY_ENABLE_LIQUID_UI),
+                new SwitchSettingFeature("amoledThemeTitle", "", Config.KEY_AMOLED_THEME),
+                new SwitchSettingFeature("customFontTitle", "", Config.KEY_CUSTOM_FONT_ENABLED),
+                new OptionSettingFeature("accentColorTitle", "accentColorDesc", (item, context) ->
+                    AccentColorDialog.show(context))
             ))
         )));
         settingItems.add(new SettingCategory("profileCategoryTitle", "profileCategoryDesc", List.of(
@@ -165,12 +208,16 @@ public final class SettingsMenu
             )),
             new SettingSubCategory("microGSubCategoryTitle", List.of(
                 new SwitchSettingFeature("useMicroGTitle", "useMicroGDesc", Config.KEY_ENABLE_MICROG).setEnabled(!MorpheConstants.isPatchedByMorphe()),
+                new SwitchSettingFeature("microGSupportTitle", "", Config.KEY_ENABLE_MICROG_SUPPORT),
                 new ListSelectionSettingFeature("microGVariantTitle", "", Config.KEY_SELECTED_MICROG_VARIANT_ID, selections)
             ))
         )));
         settingItems.add(new SettingCategory("backupAndRestoreCategoryTitle", "backupAndRestoreCategoryDesc", List.of(
             new SettingSubCategory("backupMessagesSubCategoryTitle", List.of(
-                new SwitchSettingFeature("restoreGoogleDriveBackupTitle", "restoreGoogleDriveBackupDesc", Config.KEY_RESTORE_GOOGLE_DRIVE_BACKUP)
+                new SwitchSettingFeature("restoreGoogleDriveBackupTitle", "restoreGoogleDriveBackupDesc", Config.KEY_RESTORE_GOOGLE_DRIVE_BACKUP),
+                new SwitchSettingFeature("backupIntervalTitle", "", Config.KEY_ENABLE_BACKUP_INTERVAL),
+                new NumberSettingFeature("backupIntervalHoursTitle", "", Config.KEY_BACKUP_INTERVAL_HOURS),
+                new SwitchSettingFeature("removeBackupAgeLimitTitle", "", Config.KEY_REMOVE_BACKUP_AGE_LIMIT)
             )),
             new SettingSubCategory("configBackupRestoreSubCategoryTitle", List.of(
                 new OptionSettingFeature("exportConfigFileTitle", "exportConfigFileDesc", (item, context) ->
