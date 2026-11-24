@@ -1,24 +1,24 @@
 package io.github.electroheavenvn.zaloxposed.hooks.privacy;
 
+import io.github.electroheavenvn.zaloxposed.hooks.BaseHook;
+import io.github.electroheavenvn.zaloxposed.utilities.Config;
+import io.github.electroheavenvn.zaloxposed.utilities.Logger;
+
 import org.luckypray.dexkit.query.FindMethod;
 import org.luckypray.dexkit.query.enums.StringMatchType;
 import org.luckypray.dexkit.query.matchers.MethodMatcher;
+import org.luckypray.dexkit.result.MethodData;
 
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.util.List;
 
-import io.github.electroheavenvn.zaloxposed.hooks.BaseHook;
-import io.github.electroheavenvn.zaloxposed.utilities.Config;
-import io.github.electroheavenvn.zaloxposed.utilities.DexKitCache;
-import io.github.electroheavenvn.zaloxposed.utilities.Logger;
-
 public class BlockSendSeenHook extends BaseHook
 {
     @Override
-    public void installHooks() throws Throwable
+    public void hook() throws Throwable
     {
-        List<Method> methods = DexKitCache.GetMethods("BlockSendSeen_1", () -> bridge.findMethod(FindMethod.create()
+        List<MethodData> methods = bridge.findMethod(FindMethod.create()
             .matcher(MethodMatcher.create()
                 .modifiers(Modifier.PUBLIC | Modifier.FINAL)
                 .returnType("void")
@@ -29,20 +29,51 @@ public class BlockSendSeenHook extends BaseHook
                 .addUsingString("MsgList:", StringMatchType.Contains)
                 .addUsingNumber(203)
                 .addUsingNumber(107)
-            )), classLoader);
+            ));
         if (methods.isEmpty())
-        {
             Logger.e("Target method not found");
-            return;
-        }
-        for (Method method : methods)
+        for (MethodData methodData : methods)
         {
-            doHook(method, chain ->
+            Method method = methodData.getMethodInstance(classLoader);
+            Logger.i("Hooking: " + method);
+            module.hook(method).intercept(chain ->
             {
                 if (Config.getBlockSendSeen())
                     return null;
                 return chain.proceed();
             });
+        }
+
+        // 26.10.02 anchors from the SuppressSeenStatus/HideReadReceipts patches.
+        methods = bridge.findMethod(FindMethod.create()
+            .matcher(MethodMatcher.create()
+                .addUsingString("ackMsgList", StringMatchType.Equals)
+                .addUsingString("seen", StringMatchType.Equals)
+                .addUsingString("data", StringMatchType.Equals)
+                .addUsingNumber(10309)
+                .addUsingNumber(205)
+                .addUsingNumber(10305)
+                .addUsingNumber(118)
+            ));
+        if (methods.isEmpty())
+            Logger.e("Target method not found (26.10.02)");
+        for (MethodData methodData : methods)
+        {
+            try
+            {
+                Method method = methodData.getMethodInstance(classLoader);
+                Logger.i("Hooking: " + method);
+                module.hook(method).intercept(chain ->
+                {
+                    if (Config.getBlockSendSeen() || Config.getHideReadReceipts())
+                        return null;
+                    return chain.proceed();
+                });
+            }
+            catch (Throwable t)
+            {
+                Logger.e(t);
+            }
         }
     }
 }

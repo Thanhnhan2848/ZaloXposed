@@ -8,6 +8,9 @@ if (keystorePropertiesFile.exists()) {
     keystoreProperties.load(new FileInputStream(keystorePropertiesFile))
 }
 
+def signingStoreFile = keystoreProperties['signing.storeFile']
+def hasSigning = signingStoreFile != null && !signingStoreFile.toString().isEmpty()
+
 def getGitCommitCount = { ->
     def propertyValue = project.findProperty("versionCode")
     if (propertyValue != null) {
@@ -42,16 +45,20 @@ android {
 
     signingConfigs {
         release {
-            storeFile = file(keystoreProperties['signing.storeFile'])
-            storePassword = keystoreProperties['signing.storePassword']
-            keyAlias = keystoreProperties['signing.keyAlias']
-            keyPassword = keystoreProperties['signing.keyPassword']
+            if (hasSigning) {
+                storeFile = file(signingStoreFile)
+                storePassword = keystoreProperties['signing.storePassword']
+                keyAlias = keystoreProperties['signing.keyAlias']
+                keyPassword = keystoreProperties['signing.keyPassword']
+            }
         }
     }
 
     buildTypes {
         release {
-            signingConfig signingConfigs.release
+            if (hasSigning) {
+                signingConfig signingConfigs.release
+            }
             minifyEnabled true
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
@@ -67,6 +74,83 @@ android {
             jniLibs.srcDirs = ["$rootDir/ZaloXposedNative"]
         }
     }
+}
+
+// ---------------------------------------------------------------------------
+// Native libraries are downloaded from the published release APK on every
+// fresh checkout, so a build never depends on manually committed .so files.
+// Extracted files live in ZaloXposedNative/ (git-ignored).
+//   -PrefreshNativeLibs          force re-download even when libs exist
+//   -PskipNativeLibsDownload     use whatever is already in ZaloXposedNative/
+//   -PnativeLibsUrl=<url>        override the APK URL
+// ---------------------------------------------------------------------------
+def nativeLibsDir = rootProject.file('ZaloXposedNative')
+def nativeLibsMarker = new File(nativeLibsDir, 'arm64-v8a/libZaloXposedNative.so')
+def nativeLibsUrl = (project.findProperty('nativeLibsUrl')
+    ?: 'https://github.com/ElectroHeavenVN/ZaloXposed/releases/download/v1.1.1/ZaloXposed-app-release.apk').toString()
+def skipNativeLibsDownload = project.hasProperty('skipNativeLibsDownload')
+def refreshNativeLibs = project.hasProperty('refreshNativeLibs')
+def nativeLibsApk = layout.buildDirectory.file('native-libs/zaloxposed-release.apk').get().asFile
+
+tasks.register('fetchNativeLibs') {
+    group = 'build setup'
+    description = 'Download native .so libraries from the published ZaloXposed release APK.'
+
+    doLast {
+        if (skipNativeLibsDownload) {
+            logger.lifecycle('fetchNativeLibs: skipped (-PskipNativeLibsDownload)')
+            return
+        }
+        if (nativeLibsMarker.exists() && !refreshNativeLibs) {
+            logger.lifecycle('fetchNativeLibs: libraries already present, skipping')
+            return
+        }
+
+        def apk = nativeLibsApk
+        apk.parentFile.mkdirs()
+        logger.lifecycle("fetchNativeLibs: downloading $nativeLibsUrl")
+        def connection = new URL(nativeLibsUrl).openConnection()
+        connection.connectTimeout = 60_000
+        connection.readTimeout = 120_000
+        connection.inputStream.withCloseable { input ->
+            apk.withOutputStream { output -> output << input }
+        }
+
+        int extracted = 0
+        def zip = new java.util.zip.ZipInputStream(apk.newInputStream())
+        zip.withCloseable {
+            java.util.zip.ZipEntry entry
+            while ((entry = zip.nextEntry) != null) {
+                if (entry.directory)
+                    continue
+                String name = entry.name
+                if (!name.startsWith('lib/'))
+                    continue
+                String relative = name.substring(4)
+                int slash = relative.indexOf('/')
+                if (slash <= 0 || slash == relative.length() - 1)
+                    continue
+                String fileName = relative.substring(slash + 1)
+                // libdexkit.so is already provided by the dexkit dependency.
+                if (fileName == 'libdexkit.so')
+                    continue
+                File target = new File(nativeLibsDir, relative)
+                target.parentFile.mkdirs()
+                target.withOutputStream { output ->
+                    byte[] buffer = new byte[16 * 1024]
+                    int read
+                    while ((read = zip.read(buffer)) != -1)
+                        output.write(buffer, 0, read)
+                }
+                extracted++
+            }
+        }
+        logger.lifecycle("fetchNativeLibs: extracted $extracted .so files into $nativeLibsDir")
+    }
+}
+
+tasks.named('preBuild') {
+    dependsOn 'fetchNativeLibs'
 }
 
 dependencies {

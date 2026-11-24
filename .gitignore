@@ -44,3 +44,10 @@ google-services.json
 
 ZaloXposedNative/**
 build-*.bat
+
+# Ignore readonly directories
+readonly/
+**/readonly/
+
+# Ignore readonly files
+*.readonly

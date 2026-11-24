@@ -226,6 +226,25 @@ public final class Config
     public static boolean getEnableCustomRingtone() { return (boolean)get(KEY_ENABLE_CUSTOM_RINGTONE, true); }
     public static void setEnableCustomRingtone(boolean value) { set(KEY_ENABLE_CUSTOM_RINGTONE, value); }
 
+    public static final String BG_SOURCE_ASSETS = "assets";
+    public static final String BG_SOURCE_PICKER = "picker";
+    public static final String BG_SOURCE_FOLDER = "folder";
+
+    public static final String KEY_BACKGROUND_SOURCE = "bg_source";
+
+    public static String getBackgroundSource()
+    {
+        Object value = get(KEY_BACKGROUND_SOURCE, BG_SOURCE_ASSETS);
+        if (value instanceof String)
+            return (String)value;
+        return BG_SOURCE_ASSETS;
+    }
+
+    public static void setBackgroundSource(String value)
+    {
+        set(KEY_BACKGROUND_SOURCE, value);
+    }
+
     public static final String KEY_ENABLE_EXTENDED_GRID_MENU = "enable_extended_grid_menu";
     public static boolean getEnableExtendedGridMenu() { return (boolean)get(KEY_ENABLE_EXTENDED_GRID_MENU, false); }
     public static void setEnableExtendedGridMenu(boolean value) { set(KEY_ENABLE_EXTENDED_GRID_MENU, value); }
@@ -381,4 +400,585 @@ public final class Config
     public static final String KEY_SELECTED_MICROG_VARIANT_ID = "microg_selected_variant_id";
     public static String getSelectedMicroGVariantID() { return (String)get(KEY_SELECTED_MICROG_VARIANT_ID, ""); }
     public static void setSelectedMicroGVariantID(String value) { set(KEY_SELECTED_MICROG_VARIANT_ID, value); }
+    public static final String KEY_UNLOCK_CHAT_REACTION = "unlock_chat_reaction";
+
+    public static boolean getUnlockChatReaction()
+    {
+        return (boolean)get(KEY_UNLOCK_CHAT_REACTION, false);
+    }
+
+    public static void setUnlockChatReaction(boolean value)
+    {
+        set(KEY_UNLOCK_CHAT_REACTION, value);
+    }
+
+    public static final String KEY_ENABLE_BACKUP_INTERVAL = "enable_backup_interval";
+
+    public static boolean getEnableBackupInterval()
+    {
+        return (boolean)get(KEY_ENABLE_BACKUP_INTERVAL, false);
+    }
+
+    public static void setEnableBackupInterval(boolean value)
+    {
+        set(KEY_ENABLE_BACKUP_INTERVAL, value);
+    }
+
+    public static final String KEY_BACKUP_INTERVAL_HOURS = "backup_interval_hours";
+
+    public static int getBackupIntervalHours()
+    {
+        Object value = get(KEY_BACKUP_INTERVAL_HOURS, 6);
+        int hours = value instanceof Number ? ((Number)value).intValue() : 6;
+        if (hours != 1 && hours != 3 && hours != 6 && hours != 12)
+            hours = 6;
+        return hours;
+    }
+
+    public static void setBackupIntervalHours(int value)
+    {
+        if (value != 1 && value != 3 && value != 6 && value != 12)
+            value = 6;
+        set(KEY_BACKUP_INTERVAL_HOURS, value);
+    }
+
+    public static final String KEY_ENABLE_AVATAR_SAVING = "enable_avatar_saving";
+
+    public static boolean getEnableAvatarSaving()
+    {
+        return (boolean)get(KEY_ENABLE_AVATAR_SAVING, false);
+    }
+
+    public static void setEnableAvatarSaving(boolean value)
+    {
+        set(KEY_ENABLE_AVATAR_SAVING, value);
+    }
+
+    public static final String KEY_ENABLE_COVER_SAVING = "enable_cover_saving";
+
+    public static boolean getEnableCoverSaving()
+    {
+        return (boolean)get(KEY_ENABLE_COVER_SAVING, false);
+    }
+
+    public static void setEnableCoverSaving(boolean value)
+    {
+        set(KEY_ENABLE_COVER_SAVING, value);
+    }
+
+    public static final String KEY_CUSTOM_FONT_ENABLED = "custom_font_enabled";
+
+    public static boolean getCustomFontEnabled()
+    {
+        return (boolean)get(KEY_CUSTOM_FONT_ENABLED, false);
+    }
+
+    public static void setCustomFontEnabled(boolean value)
+    {
+        set(KEY_CUSTOM_FONT_ENABLED, value);
+    }
+
+    public static final String KEY_CUSTOM_FONT_PATH = "custom_font_path";
+
+    public static String getCustomFontPath()
+    {
+        Object value = get(KEY_CUSTOM_FONT_PATH, "");
+        return value instanceof String ? (String)value : "";
+    }
+
+    public static void setCustomFontPath(String value)
+    {
+        set(KEY_CUSTOM_FONT_PATH, value == null ? "" : value);
+    }
+
+    public static final String KEY_CUSTOM_FONT_NAME = "custom_font_name";
+
+    public static String getCustomFontName()
+    {
+        Object value = get(KEY_CUSTOM_FONT_NAME, "");
+        return value instanceof String ? (String)value : "";
+    }
+
+    public static void setCustomFontName(String value)
+    {
+        set(KEY_CUSTOM_FONT_NAME, value == null ? "" : value);
+    }
+
+    public static final String KEY_ENABLE_DOWNLOAD = "enable_download";
+
+    public static boolean getEnableDownload()
+    {
+        return (boolean)get(KEY_ENABLE_DOWNLOAD, false);
+    }
+
+    public static void setEnableDownload(boolean value)
+    {
+        set(KEY_ENABLE_DOWNLOAD, value);
+    }
+
+    public static final String KEY_BLOCK_MESSAGE_EFFECT = "block_message_effect";
+
+    public static boolean getBlockMessageEffect()
+    {
+        return (boolean)get(KEY_BLOCK_MESSAGE_EFFECT, false);
+    }
+
+    public static void setBlockMessageEffect(boolean value)
+    {
+        set(KEY_BLOCK_MESSAGE_EFFECT, value);
+    }
+
+    public static final String KEY_BLOCK_STICKER_EFFECT = "block_sticker_effect";
+
+    public static boolean getBlockStickerEffect()
+    {
+        return (boolean)get(KEY_BLOCK_STICKER_EFFECT, false);
+    }
+
+    public static void setBlockStickerEffect(boolean value)
+    {
+        set(KEY_BLOCK_STICKER_EFFECT, value);
+    }
+
+    public static final String KEY_ENABLE_LIQUID_UI = "enable_liquid_ui";
+
+    public static boolean getEnableLiquidUI()
+    {
+        return (boolean)get(KEY_ENABLE_LIQUID_UI, false);
+    }
+
+    public static void setEnableLiquidUI(boolean value)
+    {
+        set(KEY_ENABLE_LIQUID_UI, value);
+    }
+
+    public static final String KEY_ENABLE_MICROG_SUPPORT = "enable_microg_support";
+
+    public static boolean getEnableMicroGSupport()
+    {
+        return (boolean)get(KEY_ENABLE_MICROG_SUPPORT, false);
+    }
+
+    public static void setEnableMicroGSupport(boolean value)
+    {
+        set(KEY_ENABLE_MICROG_SUPPORT, value);
+    }
+
+    public static final String KEY_REMOVE_BACKUP_AGE_LIMIT = "remove_backup_age_limit";
+
+    public static boolean getRemoveBackupAgeLimit()
+    {
+        return (boolean)get(KEY_REMOVE_BACKUP_AGE_LIMIT, false);
+    }
+
+    public static void setRemoveBackupAgeLimit(boolean value)
+    {
+        set(KEY_REMOVE_BACKUP_AGE_LIMIT, value);
+    }
+
+    public static final String KEY_PREFER_ORIGINAL_PHOTO = "prefer_original_photo";
+
+    public static boolean getPreferOriginalPhoto()
+    {
+        return (boolean)get(KEY_PREFER_ORIGINAL_PHOTO, false);
+    }
+
+    public static void setPreferOriginalPhoto(boolean value)
+    {
+        set(KEY_PREFER_ORIGINAL_PHOTO, value);
+    }
+
+    public static final String KEY_KEEP_EXPIRED_MEDIA = "keep_expired_media";
+
+    public static boolean getKeepExpiredMedia()
+    {
+        return (boolean)get(KEY_KEEP_EXPIRED_MEDIA, false);
+    }
+
+    public static void setKeepExpiredMedia(boolean value)
+    {
+        set(KEY_KEEP_EXPIRED_MEDIA, value);
+    }
+
+    public static final String KEY_ENABLE_CALL_RECORDING = "enable_call_recording";
+
+    public static boolean getEnableCallRecording()
+    {
+        return (boolean)get(KEY_ENABLE_CALL_RECORDING, false);
+    }
+
+    public static void setEnableCallRecording(boolean value)
+    {
+        set(KEY_ENABLE_CALL_RECORDING, value);
+    }
+
+    public static final String KEY_VIEW_STORIES_ANONYMOUSLY = "view_stories_anonymously";
+
+    public static boolean getViewStoriesAnonymously()
+    {
+        return (boolean)get(KEY_VIEW_STORIES_ANONYMOUSLY, false);
+    }
+
+    public static void setViewStoriesAnonymously(boolean value)
+    {
+        set(KEY_VIEW_STORIES_ANONYMOUSLY, value);
+    }
+
+    public static final String KEY_OPEN_LINKS_EXTERNALLY = "open_links_externally";
+
+    public static boolean getOpenLinksExternally()
+    {
+        return (boolean)get(KEY_OPEN_LINKS_EXTERNALLY, false);
+    }
+
+    public static void setOpenLinksExternally(boolean value)
+    {
+        set(KEY_OPEN_LINKS_EXTERNALLY, value);
+    }
+
+    public static final String KEY_HIDE_ZCLOUD_BANNER = "hide_zcloud_banner";
+
+    public static boolean getHideZCloudBanner()
+    {
+        return (boolean)get(KEY_HIDE_ZCLOUD_BANNER, false);
+    }
+
+    public static void setHideZCloudBanner(boolean value)
+    {
+        set(KEY_HIDE_ZCLOUD_BANNER, value);
+    }
+
+    public static final String KEY_PASSCODE_GRACE = "passcode_grace";
+
+    public static boolean getPasscodeGrace()
+    {
+        return (boolean)get(KEY_PASSCODE_GRACE, false);
+    }
+
+    public static void setPasscodeGrace(boolean value)
+    {
+        set(KEY_PASSCODE_GRACE, value);
+    }
+
+    public static final String KEY_PASSCODE_GRACE_MS = "passcode_grace_ms";
+
+    public static int getPasscodeGraceMs()
+    {
+        Object value = get(KEY_PASSCODE_GRACE_MS, 300000);
+        int ms = value instanceof Number ? ((Number)value).intValue() : 300000;
+        if (ms != 60000 && ms != 300000 && ms != 900000 && ms != 1800000 && ms != 3600000)
+            ms = 300000;
+        return ms;
+    }
+
+    public static void setPasscodeGraceMs(int value)
+    {
+        if (value != 60000 && value != 300000 && value != 900000 && value != 1800000 && value != 3600000)
+            value = 300000;
+        set(KEY_PASSCODE_GRACE_MS, value);
+    }
+
+    public static final String KEY_DISABLE_SPONSORED_PLACEMENTS = "disable_sponsored_placements";
+
+    public static boolean getDisableSponsoredPlacements()
+    {
+        return (boolean)get(KEY_DISABLE_SPONSORED_PLACEMENTS, false);
+    }
+
+    public static void setDisableSponsoredPlacements(boolean value)
+    {
+        set(KEY_DISABLE_SPONSORED_PLACEMENTS, value);
+    }
+
+    public static final String KEY_DISABLE_AD_ID = "disable_ad_id";
+
+    public static boolean getDisableAdId()
+    {
+        return (boolean)get(KEY_DISABLE_AD_ID, false);
+    }
+
+    public static void setDisableAdId(boolean value)
+    {
+        set(KEY_DISABLE_AD_ID, value);
+    }
+
+    public static final String KEY_DISABLE_FIREBASE_ANALYTICS = "disable_firebase_analytics";
+
+    public static boolean getDisableFirebaseAnalytics()
+    {
+        return (boolean)get(KEY_DISABLE_FIREBASE_ANALYTICS, false);
+    }
+
+    public static void setDisableFirebaseAnalytics(boolean value)
+    {
+        set(KEY_DISABLE_FIREBASE_ANALYTICS, value);
+    }
+
+    public static final String KEY_DISABLE_CRASHLYTICS = "disable_crashlytics";
+
+    public static boolean getDisableCrashlytics()
+    {
+        return (boolean)get(KEY_DISABLE_CRASHLYTICS, false);
+    }
+
+    public static void setDisableCrashlytics(boolean value)
+    {
+        set(KEY_DISABLE_CRASHLYTICS, value);
+    }
+
+    public static final String KEY_AMOLED_THEME = "amoled_theme";
+
+    public static boolean getAmoledTheme()
+    {
+        return (boolean)get(KEY_AMOLED_THEME, false);
+    }
+
+    public static void setAmoledTheme(boolean value)
+    {
+        set(KEY_AMOLED_THEME, value);
+    }
+
+    public static final String KEY_STRANGER_NOTIFICATIONS = "stranger_notifications";
+
+    public static boolean getStrangerNotifications()
+    {
+        return (boolean)get(KEY_STRANGER_NOTIFICATIONS, false);
+    }
+
+    public static void setStrangerNotifications(boolean value)
+    {
+        set(KEY_STRANGER_NOTIFICATIONS, value);
+    }
+
+    public static final String KEY_CUSTOM_SOUNDS = "custom_sounds";
+
+    public static boolean getCustomSounds()
+    {
+        return (boolean)get(KEY_CUSTOM_SOUNDS, false);
+    }
+
+    public static void setCustomSounds(boolean value)
+    {
+        set(KEY_CUSTOM_SOUNDS, value);
+    }
+
+    public static final String KEY_HIDE_DELIVERY_RECEIPTS = "hide_delivery_receipts";
+
+    public static boolean getHideDeliveryReceipts()
+    {
+        return (boolean)get(KEY_HIDE_DELIVERY_RECEIPTS, false);
+    }
+
+    public static void setHideDeliveryReceipts(boolean value)
+    {
+        set(KEY_HIDE_DELIVERY_RECEIPTS, value);
+    }
+
+    public static final String KEY_HIDE_READ_RECEIPTS = "hide_read_receipts";
+
+    public static boolean getHideReadReceipts()
+    {
+        return (boolean)get(KEY_HIDE_READ_RECEIPTS, false);
+    }
+
+    public static void setHideReadReceipts(boolean value)
+    {
+        set(KEY_HIDE_READ_RECEIPTS, value);
+    }
+
+    public static final String KEY_HIDE_OFFICIAL_ACCOUNTS = "hide_official_accounts";
+
+    public static boolean getHideOfficialAccounts()
+    {
+        return (boolean)get(KEY_HIDE_OFFICIAL_ACCOUNTS, false);
+    }
+
+    public static void setHideOfficialAccounts(boolean value)
+    {
+        set(KEY_HIDE_OFFICIAL_ACCOUNTS, value);
+    }
+
+    public static final String KEY_VIEW_ONLINE_PRIVATELY = "view_online_privately";
+
+    public static boolean getViewOnlinePrivately()
+    {
+        return (boolean)get(KEY_VIEW_ONLINE_PRIVATELY, false);
+    }
+
+    public static void setViewOnlinePrivately(boolean value)
+    {
+        set(KEY_VIEW_ONLINE_PRIVATELY, value);
+    }
+
+    public static final String KEY_HIDE_FEED_ADS = "hide_feed_ads";
+
+    public static boolean getHideFeedAds()
+    {
+        return (boolean)get(KEY_HIDE_FEED_ADS, false);
+    }
+
+    public static void setHideFeedAds(boolean value)
+    {
+        set(KEY_HIDE_FEED_ADS, value);
+    }
+
+    public static final String KEY_HIDE_MESSAGE_ADS = "hide_message_ads";
+
+    public static boolean getHideMessageAds()
+    {
+        return (boolean)get(KEY_HIDE_MESSAGE_ADS, false);
+    }
+
+    public static void setHideMessageAds(boolean value)
+    {
+        set(KEY_HIDE_MESSAGE_ADS, value);
+    }
+
+    public static final String KEY_ENABLE_DRIVE_MEDIA_BACKUP = "enable_drive_media_backup";
+
+    public static boolean getEnableDriveMediaBackup()
+    {
+        return (boolean)get(KEY_ENABLE_DRIVE_MEDIA_BACKUP, false);
+    }
+
+    public static void setEnableDriveMediaBackup(boolean value)
+    {
+        set(KEY_ENABLE_DRIVE_MEDIA_BACKUP, value);
+    }
+
+    public static final String KEY_HIDE_CONTACTS_TAB = "hide_contacts_tab";
+
+    public static boolean getHideContactsTab()
+    {
+        return (boolean)get(KEY_HIDE_CONTACTS_TAB, false);
+    }
+
+    public static void setHideContactsTab(boolean value)
+    {
+        set(KEY_HIDE_CONTACTS_TAB, value);
+    }
+
+    public static final String KEY_HIDE_TIMELINE_TAB = "hide_timeline_tab";
+
+    public static boolean getHideTimelineTab()
+    {
+        return (boolean)get(KEY_HIDE_TIMELINE_TAB, false);
+    }
+
+    public static void setHideTimelineTab(boolean value)
+    {
+        set(KEY_HIDE_TIMELINE_TAB, value);
+    }
+
+    public static final String KEY_HIDE_DIRECT_TYPING = "hide_direct_typing";
+
+    public static boolean getHideDirectTyping()
+    {
+        return (boolean)get(KEY_HIDE_DIRECT_TYPING, false);
+    }
+
+    public static void setHideDirectTyping(boolean value)
+    {
+        set(KEY_HIDE_DIRECT_TYPING, value);
+    }
+
+    public static final String KEY_HIDE_VIDEO_PROMOS = "hide_video_promos";
+
+    public static boolean getHideVideoPromos()
+    {
+        return (boolean)get(KEY_HIDE_VIDEO_PROMOS, false);
+    }
+
+    public static void setHideVideoPromos(boolean value)
+    {
+        set(KEY_HIDE_VIDEO_PROMOS, value);
+    }
+
+    public static final String KEY_DISABLE_AD_GATES = "disable_ad_gates";
+
+    public static boolean getDisableAdGates()
+    {
+        return (boolean)get(KEY_DISABLE_AD_GATES, false);
+    }
+
+    public static void setDisableAdGates(boolean value)
+    {
+        set(KEY_DISABLE_AD_GATES, value);
+    }
+
+    public static final String KEY_HIDE_LAST_SEEN = "hide_last_seen";
+
+    public static boolean getHideLastSeen()
+    {
+        return (boolean)get(KEY_HIDE_LAST_SEEN, false);
+    }
+
+    public static void setHideLastSeen(boolean value)
+    {
+        set(KEY_HIDE_LAST_SEEN, value);
+    }
+
+    public static final String KEY_FILTER_ONLINE_LIST = "filter_online_list";
+
+    public static boolean getFilterOnlineList()
+    {
+        return (boolean)get(KEY_FILTER_ONLINE_LIST, false);
+    }
+
+    public static void setFilterOnlineList(boolean value)
+    {
+        set(KEY_FILTER_ONLINE_LIST, value);
+    }
+
+    public static final String KEY_MARK_RECALLED = "mark_recalled";
+
+    public static boolean getMarkRecalled()
+    {
+        return (boolean)get(KEY_MARK_RECALLED, false);
+    }
+
+    public static void setMarkRecalled(boolean value)
+    {
+        set(KEY_MARK_RECALLED, value);
+    }
+
+    public static final String KEY_ACCENT_COLOR = "accent_color";
+
+    /** Hex string such as {@code #6750A4}, or the special value {@code monet}. */
+    public static String getAccentColor()
+    {
+        Object value = get(KEY_ACCENT_COLOR, "#0068FF");
+        return value instanceof String ? (String)value : "#0068FF";
+    }
+
+    public static void setAccentColor(String value)
+    {
+        set(KEY_ACCENT_COLOR, value);
+    }
+
+    public static final String KEY_BG_OPACITY = "bg_opacity";
+
+    public static int getBackgroundOpacity()
+    {
+        Object value = get(KEY_BG_OPACITY, 15);
+        return value instanceof Integer ? (Integer)value : 15;
+    }
+
+    public static void setBackgroundOpacity(int value)
+    {
+        set(KEY_BG_OPACITY, Math.max(0, Math.min(100, value)));
+    }
+
+    public static final String KEY_BG_BLUR = "bg_blur";
+
+    public static int getBackgroundBlur()
+    {
+        Object value = get(KEY_BG_BLUR, 0);
+        return value instanceof Integer ? (Integer)value : 0;
+    }
+
+    public static void setBackgroundBlur(int value)
+    {
+        set(KEY_BG_BLUR, Math.max(0, Math.min(25, value)));
+    }
 }

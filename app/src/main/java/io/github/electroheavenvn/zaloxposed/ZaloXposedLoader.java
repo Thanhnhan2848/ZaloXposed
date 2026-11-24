@@ -64,7 +64,7 @@ public class ZaloXposedLoader extends XposedModule
         hooks.add(new AntiRecallDeleteChatRowHook());
         hooks.add(new ConfigImportExportHook());
         hooks.add(new ZaloViewLauncherHook());
-        hooks.add(new AmoledThemeHook());
+        hooks.add(new io.github.electroheavenvn.zaloxposed.hooks.permanent.AmoledThemeHook());
         hooks.add(new MicroGHook());
         hooks.add(new TestHook());
         if (MorpheConstants.isPatchedByMorphe())
@@ -98,6 +98,27 @@ public class ZaloXposedLoader extends XposedModule
         hooks.add(new UnlockZStyleHook());
         hooks.add(new HideFullscreenEffectsHook());
         hooks.add(new DefaultOriginalQualityHook());
+        hooks.add(new UnlockChatReactionHook());
+        hooks.add(new BackupIntervalHook());
+        hooks.add(new AvatarCoverSavingHook());
+        hooks.add(new CustomFontHook());
+        hooks.add(new DownloadMediaHook());
+        hooks.add(new BlockScreenEffectHook());
+        hooks.add(new LiquidTabHook());
+        hooks.add(new BackupAgeLimitHook());
+        hooks.add(new OriginalPhotoHook());
+        hooks.add(new KeepExpiredMediaHook());
+        hooks.add(new CallRecordingHook());
+        hooks.add(new StoryPrivacyHook());
+        hooks.add(new WebLinkExternalizeHook());
+        hooks.add(new ZcloudBannerHook());
+        hooks.add(new PasscodeGraceHook());
+        hooks.add(new SponsoredPlacementsHook());
+        hooks.add(new TelemetryExtrasHook());
+        hooks.add(new ExtraFeaturesHook());
+        hooks.add(new MoreFeaturesHook());
+        hooks.add(new ThemeColorHook());
+        hooks.add(new CustomSoundsHook());
     }
 
     @SuppressWarnings("deprecation")
@@ -146,6 +167,7 @@ public class ZaloXposedLoader extends XposedModule
                     customSplash = inflater.inflate(layoutId, null, false);
                     if (customSplash == null)
                         return result;
+                    customSplash.setBackgroundColor(ThemeColors.getAccent(activity));
                     View decor = activity.getWindow() != null ? activity.getWindow()
                         .getDecorView() : null;
                     if (!(decor instanceof ViewGroup))
