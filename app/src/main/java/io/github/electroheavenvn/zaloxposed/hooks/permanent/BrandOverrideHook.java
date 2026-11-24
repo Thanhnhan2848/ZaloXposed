@@ -16,7 +16,8 @@ import io.github.libxposed.api.XposedInterface;
  */
 public class BrandOverrideHook extends BaseHook
 {
-    private static final Pattern AUTHOR_PATTERN = Pattern.compile("ElectroHeavenVN", Pattern.CASE_INSENSITIVE);
+    // Author brand is no longer overridden; this pattern never matches.
+    private static final Pattern AUTHOR_PATTERN = Pattern.compile("(?!)", Pattern.CASE_INSENSITIVE);
     private static final Pattern MORPHE_PATTERN = Pattern.compile("ZaloMorphe", Pattern.CASE_INSENSITIVE);
 
     private static final String TARGET_AUTHOR = "ZaloXposed";

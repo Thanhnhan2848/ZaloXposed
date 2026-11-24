@@ -184,7 +184,7 @@ public class AntiRecallDeleteChatRowHook extends BaseHook
             }
             else
             {
-                if (!"ZaloXposed by ElectroHeavenVN".equals(quoteDisplayNameField.get(quote)) && !"ZaloMorphe by ElectroHeavenVN".equals(quoteDisplayNameField.get(quote)))
+                if (!"ZaloXposed".equals(quoteDisplayNameField.get(quote)) && !"ZaloMorphe".equals(quoteDisplayNameField.get(quote)))
                     return chain.proceed();
                 Object attr = quoteAttrField.get(quote);
                 if (attr == null)
