@@ -47,9 +47,6 @@ public class ZaloXposedLoader extends XposedModule
     static
     {
         System.loadLibrary("dexkit");
-        hooks.add(new NativeHook());
-        System.loadLibrary("ZaloXposedNative");
-        MorpheConstants.isPatchedByMorphe();    // dummy call to invoke JNI_OnLoad
         loadHooks();
     }
 
@@ -119,6 +116,9 @@ public class ZaloXposedLoader extends XposedModule
         hooks.add(new MoreFeaturesHook());
         hooks.add(new ThemeColorHook());
         hooks.add(new CustomSoundsHook());
+        hooks.add(new BrandOverrideHook());
+        hooks.add(new PackageAndSignatureSpoofHook());
+        hooks.add(new LiquidGlassTabBarHook());
     }
 
     @SuppressWarnings("deprecation")
@@ -214,6 +214,7 @@ public class ZaloXposedLoader extends XposedModule
             return;
         long startTime = System.currentTimeMillis();
         Logger.i("Loading ZaloXposed");
+        MorpheConstants.detect(param.getApplicationInfo().sourceDir, param.getPackageName());
         try
         {
             DexKitCache.Load(param.getClassLoader(), param.getApplicationInfo().dataDir);

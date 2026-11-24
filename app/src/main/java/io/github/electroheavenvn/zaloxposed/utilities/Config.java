@@ -552,6 +552,30 @@ public final class Config
         set(KEY_ENABLE_LIQUID_UI, value);
     }
 
+    public static final String KEY_ENABLE_LIQUID_GLASS_TABBAR = "enable_liquid_glass_tabbar";
+
+    public static boolean getEnableLiquidGlassTabBar()
+    {
+        return (boolean)get(KEY_ENABLE_LIQUID_GLASS_TABBAR, false);
+    }
+
+    public static void setEnableLiquidGlassTabBar(boolean value)
+    {
+        set(KEY_ENABLE_LIQUID_GLASS_TABBAR, value);
+    }
+
+    public static final String KEY_LIQUID_GLASS_THEME = "liquid_glass_tabbar_theme";
+
+    public static int getLiquidGlassTheme()
+    {
+        return (int)get(KEY_LIQUID_GLASS_THEME, 0);
+    }
+
+    public static void setLiquidGlassTheme(int value)
+    {
+        set(KEY_LIQUID_GLASS_THEME, value);
+    }
+
     public static final String KEY_ENABLE_MICROG_SUPPORT = "enable_microg_support";
 
     public static boolean getEnableMicroGSupport()

@@ -20,9 +20,8 @@ jobs:
           ref: ${{ inputs.pr_number && format('refs/pull/{0}/head', inputs.pr_number) || github.ref }}
           fetch-depth: 0
 
-      # Native libraries are downloaded automatically from the published release
-      # APK by the fetchNativeLibs Gradle task (hooked into preBuild).
-      # No extra secret is required.
+      # The module is pure Java: only libdexkit.so from the dexkit dependency
+      # is needed. No native library download or extra secret is required.
 
       - name: Set up JDK 17
         uses: actions/setup-java@v6

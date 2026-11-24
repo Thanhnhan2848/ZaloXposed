@@ -26,6 +26,8 @@ public final class S
         trans.put("adsAndTrackingCategoryDesc", new String[] { "Hide ads and limit tracking", "Ẩn quảng cáo và hạn chế theo dõi" });
         trans.put("uiCategoryTitle", new String[] { "User interface", "Giao diện" });
         trans.put("uiCategoryDesc", new String[] { "Customize user interface", "Tùy giao diện ứng dụng" });
+        trans.put("liquidGlassTabBarTitle", new String[] { "Liquid glass tab bar", "Thanh tab kính lỏng" });
+        trans.put("liquidGlassTabBarDesc", new String[] { "Floating rounded bar with a sliding highlight", "Thanh tab bo tròn nổi với vùng sáng trượt" });
         trans.put("profileCategoryTitle", new String[] { "Profile", "Hồ sơ" });
         trans.put("profileCategoryDesc", new String[] { "Customize profile settings", "Tùy chỉnh cài đặt hồ sơ" });
         trans.put("groupCategoryTitle", new String[] { "Groups", "Nhóm" });
