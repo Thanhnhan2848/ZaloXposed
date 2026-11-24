@@ -1,24 +1,29 @@
 package io.github.electroheavenvn.zaloxposed.hooks.ui;
 
+import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 import io.github.electroheavenvn.zaloxposed.hooks.BaseHook;
 import io.github.electroheavenvn.zaloxposed.utilities.BackgroundUtils;
 import io.github.electroheavenvn.zaloxposed.utilities.BlurUtils;
 import io.github.electroheavenvn.zaloxposed.utilities.Config;
 import io.github.electroheavenvn.zaloxposed.utilities.Logger;
+import io.github.electroheavenvn.zaloxposed.utilities.Utils;
 
 import org.luckypray.dexkit.query.FindMethod;
 import org.luckypray.dexkit.query.enums.StringMatchType;
 import org.luckypray.dexkit.query.matchers.MethodMatcher;
 import org.luckypray.dexkit.result.MethodData;
 
+import java.io.File;
 import java.io.InputStream;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
@@ -160,5 +165,54 @@ public class CustomBackgroundHook extends BaseHook
             Logger.e(e);
         }
         return null;
+    }
+
+    // Kept for the legacy settings menu (SettingsMenu.java).
+    public static void PickImages(Context context)
+    {
+        try
+        {
+            Activity activity = BackgroundUtils.findActivity(context);
+            if (activity == null)
+                return;
+            Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
+            intent.addCategory(Intent.CATEGORY_OPENABLE);
+            intent.setType("image/*");
+            intent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true);
+            intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+            activity.startActivityForResult(intent, BackgroundUtils.REQUEST_CODE_PICK_IMAGE);
+        }
+        catch (Exception e)
+        {
+            Logger.e(e);
+        }
+    }
+
+    public static void ClearImages(Context context)
+    {
+        int deleted = 0;
+        File dir = BackgroundUtils.getFolder();
+        File[] files = dir == null ? null : dir.listFiles();
+        if (files != null)
+        {
+            for (File file : files)
+            {
+                if (file.isFile() && file.delete())
+                    deleted++;
+            }
+        }
+        try
+        {
+            Toast.makeText(context, Utils.IsEnglish()
+                ? "Deleted " + deleted + " background image(s)"
+                : "Đã xoá " + deleted + " ảnh nền", Toast.LENGTH_SHORT).show();
+        }
+        catch (Exception ignored) { }
+    }
+
+    public static int getCustomImageCount()
+    {
+        List<File> images = BackgroundUtils.getFolderImages();
+        return images == null ? 0 : images.size();
     }
 }

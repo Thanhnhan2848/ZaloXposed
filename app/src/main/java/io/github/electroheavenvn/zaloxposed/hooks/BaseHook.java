@@ -20,26 +20,37 @@ import io.github.libxposed.api.XposedModuleInterface;
 public abstract class BaseHook
 {
     private static final HashMap<Executable, ArrayList<Object>> hooks = new HashMap<>();
-    private static XposedModule module;
+    private static XposedModule sModule;
+    // Legacy hooks from the upstream diff use this protected field directly.
+    protected XposedModule module;
     protected DexKitBridge bridge;
     protected ClassLoader classLoader;
     protected AssetManager assetManager;
 
-    public static void setModule(XposedModule module) { BaseHook.module = module; }
+    public static void setModule(XposedModule sModule) { BaseHook.sModule = sModule; }
 
     public void Init(DexKitBridge bridge, XposedModuleInterface.PackageReadyParam param, AssetManager assetManager)
     {
         this.bridge = bridge;
         this.classLoader = param.getClassLoader();
         this.assetManager = assetManager;
+        this.module = sModule;
     }
 
-    public abstract void installHooks() throws Throwable;
+    // New hooks override hook(); legacy hooks override installHooks(). Bridge both.
+    public void installHooks() throws Throwable
+    {
+        hook();
+    }
+
+    public void hook() throws Throwable
+    {
+    }
 
     protected XposedInterface.HookHandle doHook(Executable origin, XposedInterface.Hooker hooker)
     {
         logHook(origin, XposedInterface.PRIORITY_DEFAULT, hooker);
-        XposedInterface.HookHandle handle = module.hook(origin).intercept(hooker);
+        XposedInterface.HookHandle handle = sModule.hook(origin).intercept(hooker);
         if (!hooks.containsKey(origin) || hooks.get(origin) == null)
             hooks.put(origin, new ArrayList<>());
         ArrayList<Object> handles = hooks.get(origin);
@@ -51,7 +62,7 @@ public abstract class BaseHook
     protected XposedInterface.HookHandle doHook(Executable origin, int priority, XposedInterface.Hooker hooker)
     {
         logHook(origin, priority, hooker);
-        XposedInterface.HookHandle handle = module.hook(origin).setPriority(priority).intercept(hooker);
+        XposedInterface.HookHandle handle = sModule.hook(origin).setPriority(priority).intercept(hooker);
         if (!hooks.containsKey(origin) || hooks.get(origin) == null)
             hooks.put(origin, new ArrayList<>());
         ArrayList<Object> handles = hooks.get(origin);
@@ -63,7 +74,7 @@ public abstract class BaseHook
     protected XposedInterface.HookHandle doHookClInit(Class<?> origin, XposedInterface.Hooker hooker)
     {
         logHook(origin, XposedInterface.PRIORITY_DEFAULT, hooker);
-        XposedInterface.HookHandle handle = module.hookClassInitializer(origin).intercept(hooker);
+        XposedInterface.HookHandle handle = sModule.hookClassInitializer(origin).intercept(hooker);
         Executable exe = handle.getExecutable();
         if (!hooks.containsKey(exe) || hooks.get(exe) == null)
             hooks.put(exe, new ArrayList<>());
@@ -76,7 +87,7 @@ public abstract class BaseHook
     protected XposedInterface.HookHandle doHookClInit(Class<?> origin, int priority, XposedInterface.Hooker hooker)
     {
         logHook(origin, priority, hooker);
-        XposedInterface.HookHandle handle = module.hookClassInitializer(origin).setPriority(priority).intercept(hooker);
+        XposedInterface.HookHandle handle = sModule.hookClassInitializer(origin).setPriority(priority).intercept(hooker);
         Executable exe = handle.getExecutable();
         if (!hooks.containsKey(exe) || hooks.get(exe) == null)
             hooks.put(exe, new ArrayList<>());
@@ -133,8 +144,8 @@ public abstract class BaseHook
         if (hookerName.startsWith("class "))
             hookerName = hookerName.substring("class ".length());
         Log.i(Logger.TAG, CYAN + callerInfo + LIME + str + PURPLE + target + GRAY + " (" + hookerName + ")" + RESET);
-        if (module != null)
-            module.log(Log.INFO, Logger.TAG, callerInfo + str + target + " (" + hookerName + ")");
+        if (sModule != null)
+            sModule.log(Log.INFO, Logger.TAG, callerInfo + str + target + " (" + hookerName + ")");
     }
 
     private static void logUnhook(XposedInterface.HookHandle handle)
@@ -148,8 +159,8 @@ public abstract class BaseHook
         String callerInfo = getCallerInfo();
         String target = handle.getExecutable().toString().replace("java.lang.String", "String");
         Log.i(Logger.TAG, CYAN + callerInfo + LIME + "Unhooking: " + PURPLE + target + RESET);
-        if (module != null)
-            module.log(Log.INFO, Logger.TAG, callerInfo + "Unhooking: " + target);
+        if (sModule != null)
+            sModule.log(Log.INFO, Logger.TAG, callerInfo + "Unhooking: " + target);
     }
 
     private static String getCallerInfo()

@@ -32,6 +32,7 @@ import io.github.electroheavenvn.zaloxposed.hooks.BaseHook;
 import io.github.electroheavenvn.zaloxposed.hooks.ResourceHook;
 import io.github.electroheavenvn.zaloxposed.hooks.ui.AccentColorDialog;
 import io.github.electroheavenvn.zaloxposed.hooks.ui.CallRecordingsDialog;
+import io.github.electroheavenvn.zaloxposed.settingsmenu.SettingItemID;
 import io.github.electroheavenvn.zaloxposed.utilities.BackgroundUtils;
 import io.github.electroheavenvn.zaloxposed.utilities.Config;
 import io.github.electroheavenvn.zaloxposed.utilities.CustomFont;
@@ -2001,7 +2002,7 @@ public class ZaloXposedSettingsMenuHook extends BaseHook
         }
         method = methods.get(0).getMethodInstance(classLoader);
         // Field actionBarField = Utils.FindFieldByType(Class.forName("com.zing.zalo.ui.settings.SettingPrivateV2View", false, classLoader), "com.zing.zalo.zdesign.component.header.ZdsActionBar");
-        Field actionBarField = Utils.FindFieldByType(Class.forName("com.zing.zalo.ui.zviews.ZaloViewNewActionBar", false, classLoader), "com.zing.zalo.zdesign.component.header.ZdsActionBar");
+        Field actionBarField = Utils.FindFieldByType(Class.forName("com.zing.zalo.ui.zviews.ZaloViewNewActionBar", false, classLoader), "com.zing.zalo.zdesign.component.header.ZdsActionBar", true);
         Logger.i("Hooking: " + method);
         module.hook(method).setPriority(10).intercept(chain ->
         {
