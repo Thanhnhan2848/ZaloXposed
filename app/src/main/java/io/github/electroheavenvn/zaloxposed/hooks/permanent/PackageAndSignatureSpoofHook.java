@@ -19,7 +19,6 @@ import java.security.cert.X509Certificate;
 import java.util.Arrays;
 
 import io.github.electroheavenvn.zaloxposed.Common;
-import io.github.electroheavenvn.zaloxposed.MorpheConstants;
 import io.github.electroheavenvn.zaloxposed.hooks.BaseHook;
 import io.github.electroheavenvn.zaloxposed.utilities.Logger;
 
@@ -141,9 +140,6 @@ public class PackageAndSignatureSpoofHook extends BaseHook
     @Override
     public void installHooks() throws Throwable
     {
-        if (!MorpheConstants.isPatchedByMorphe())
-            return;
-
         initCert();
         final String actualPackage = Common.getPackageName();
         final boolean cloned = actualPackage != null && !ORIG_PKG.equals(actualPackage);
