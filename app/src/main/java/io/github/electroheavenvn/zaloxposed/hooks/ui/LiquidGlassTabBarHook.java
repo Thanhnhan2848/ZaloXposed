@@ -388,12 +388,7 @@ public class LiquidGlassTabBarHook extends BaseHook
         private float lastScrollY = 0f;
         private boolean trackingScroll = false;
 
-        private final ViewTreeObserver.OnPreDrawListener preDrawListener = () ->
-        {
-            if (attached && customBar != null && !isCapturingBackdrop)
-                customBar.invalidate();
-            return true;
-        };
+        private final ViewTreeObserver.OnPreDrawListener preDrawListener = () -> true;
 
         private final Runnable syncPoller = new Runnable()
         {
@@ -571,6 +566,9 @@ public class LiquidGlassTabBarHook extends BaseHook
         private static void collapseViewCompletely(View v)
         {
             if (v == null)
+                return;
+            if (v.getVisibility() == View.GONE && v.getAlpha() == 0f
+                && v.getTranslationY() == 10000f && (!v.isEnabled()) && (!v.isClickable()))
                 return;
             v.setVisibility(View.GONE);
             v.setAlpha(0f);
@@ -1089,6 +1087,10 @@ public class LiquidGlassTabBarHook extends BaseHook
 
         private long lastFrameMs = 0L;
         private boolean animating = false;
+        // Re-recording the live backdrop every frame is very expensive and
+        // makes dragging stutter. Refresh it at most ~8 times per second.
+        private long lastBackdropCaptureMs = 0L;
+        private boolean backdropRecorded = false;
 
         // Touch drag state
         private boolean pointerDown = false;
@@ -1229,7 +1231,9 @@ public class LiquidGlassTabBarHook extends BaseHook
             {
                 int w = getWidth();
                 int h = getHeight();
-                rc.drawColor(owner.isDarkTheme ? 0xFF000000 : 0xFFF4F5F6);
+                // Keep the backdrop translucent so the real Zalo content shows
+                // through instead of a flat white/black plate.
+                rc.drawColor(owner.isDarkTheme ? 0x66101418 : 0x33F4F7FC);
 
                 Drawable rootBg = owner.root.getBackground();
                 if (rootBg != null)
@@ -1280,10 +1284,10 @@ public class LiquidGlassTabBarHook extends BaseHook
             // 1. Crystal-clear translucent glass tint (much more transparent so live backdrop shows through!)
             int topGlass = hasBackdrop
                 ? (dark ? 0x721C1E22 : 0x78FFFFFF)
-                : (dark ? 0xEE36383C : 0xECF8FAFE);
+                : (dark ? 0xB836383C : 0xB8FFFFFF);
             int botGlass = hasBackdrop
                 ? (dark ? 0x62121418 : 0x64F0F4FA)
-                : (dark ? 0xEA24262A : 0xE2EDF2FA);
+                : (dark ? 0xA824262A : 0xA8F0F4FA);
             capsuleFillPaint.setShadowLayer(dpf(10f), 0f, dpf(3f), dark ? 0x55000000 : 0x16001433);
             capsuleFillPaint.setShader(new LinearGradient(
                 0f, capsuleRect.top, 0f, capsuleRect.bottom, topGlass, botGlass, Shader.TileMode.CLAMP));
@@ -1513,18 +1517,26 @@ public class LiquidGlassTabBarHook extends BaseHook
                 int w = getWidth();
                 int h = getHeight();
 
-                // 1. Capture live Zalo views & wallpaper underneath (sharp)
-                rawNode.setPosition(0, 0, w, h);
-                RecordingCanvas rawRc = rawNode.beginRecording();
-                captureLiveBackdrop(rawRc);
-                rawNode.endRecording();
+                // 1 + 2. Capture live Zalo views & wallpaper underneath.
+                // Reuse the recording between frames - re-rendering the whole
+                // content view on every animation frame is what caused the lag.
+                long now = SystemClock.uptimeMillis();
+                if (!backdropRecorded || now - lastBackdropCaptureMs >= 120L
+                    || rawNode.getWidth() != w || rawNode.getHeight() != h)
+                {
+                    rawNode.setPosition(0, 0, w, h);
+                    RecordingCanvas rawRc = rawNode.beginRecording();
+                    captureLiveBackdrop(rawRc);
+                    rawNode.endRecording();
 
-                // 2. Frosted blur version of live backdrop for inside the TabBar capsule
-                frostNode.setPosition(0, 0, w, h);
-                RecordingCanvas frostRc = frostNode.beginRecording();
-                frostRc.drawRenderNode(rawNode);
-                frostNode.endRecording();
-                frostNode.setRenderEffect(RenderEffect.createBlurEffect(dpf(8f), dpf(8f), Shader.TileMode.CLAMP));
+                    frostNode.setPosition(0, 0, w, h);
+                    RecordingCanvas frostRc = frostNode.beginRecording();
+                    frostRc.drawRenderNode(rawNode);
+                    frostNode.endRecording();
+                    frostNode.setRenderEffect(RenderEffect.createBlurEffect(dpf(8f), dpf(8f), Shader.TileMode.CLAMP));
+                    lastBackdropCaptureMs = now;
+                    backdropRecorded = true;
+                }
 
                 // 3. Combine sharp backdrop (for protruding lens) + frosted capsule + glass foreground
                 node.setPosition(0, 0, w, h);
