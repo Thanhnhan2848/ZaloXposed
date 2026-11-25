@@ -652,18 +652,6 @@ public class ZaloXposedSettingsMenuHook extends BaseHook
         ListItemSettingHelper.SetTitle(listItemSetting, Utils.IsEnglish() ? "Accent color" : "Màu nhấn");
         ListItemSettingHelper.SetSubtitle(listItemSetting, ThemeColors.currentLabel(context));
         ListItemSettingHelper.SetOnClickListener(listItemSetting, v -> AccentColorDialog.show(v.getContext()));
-        listItemSetting = ListItemSettingHelper.CreateNew(context);
-        rootLayout.addView(listItemSetting);
-        ListItemSettingHelper.SetIDTracking(listItemSetting, "");
-        ListItemSettingHelper.HideDivider(listItemSetting);
-        ListItemSettingHelper.SetTitle(listItemSetting, Utils.IsEnglish() ? "Liquid tab bar" : "Thanh tab dạng lỏng");
-        ListItemSettingHelper.SetSubtitle(listItemSetting, Utils.IsEnglish()
-            ? "Floating rounded tabs with a sliding highlight."
-            : "Thanh tab nổi bo tròn với hiệu ứng trượt.");
-        ListItemSettingHelper.SetSwitch(listItemSetting, Config.getEnableLiquidUI());
-        ListItemSettingHelper.SetCheckedChangeListener(listItemSetting, Config::setEnableLiquidUI);
-
-
         separator = createSeparator(context);
         rootLayout.addView(separator);
         headerTitle = createHeaderTitle(context);

@@ -540,18 +540,6 @@ public final class Config
         set(KEY_BLOCK_STICKER_EFFECT, value);
     }
 
-    public static final String KEY_ENABLE_LIQUID_UI = "enable_liquid_ui";
-
-    public static boolean getEnableLiquidUI()
-    {
-        return (boolean)get(KEY_ENABLE_LIQUID_UI, false);
-    }
-
-    public static void setEnableLiquidUI(boolean value)
-    {
-        set(KEY_ENABLE_LIQUID_UI, value);
-    }
-
     public static final String KEY_ENABLE_LIQUID_GLASS_TABBAR = "enable_liquid_glass_tabbar";
 
     public static boolean getEnableLiquidGlassTabBar()

@@ -184,7 +184,6 @@ public final class SettingsMenu
                     new ListSelectionSettingFeature.Selection("liquidGlassThemeLight", 0),
                     new ListSelectionSettingFeature.Selection("liquidGlassThemeDark", 1)
                 )),
-                new SwitchSettingFeature("liquidTabBarTitle", "", Config.KEY_ENABLE_LIQUID_UI),
                 new SwitchSettingFeature("amoledThemeTitle", "", Config.KEY_AMOLED_THEME),
                 new SwitchSettingFeature("customFontTitle", "", Config.KEY_CUSTOM_FONT_ENABLED),
                 new OptionSettingFeature("accentColorTitle", "accentColorDesc", (item, context) ->

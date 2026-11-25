@@ -117,9 +117,12 @@ public class HideAdsHook extends BaseHook
             doHook(method, chain ->
             {
                 Object value = chain.proceed();
+                String endpoint = value == null ? "" : value.toString();
+                // Native ads shown inside the message list.
+                if (Config.getHideMessageAds() && endpoint.contains("/zpads/inboxnative/getads"))
+                    return "";
                 if (!Config.getBlockAdsEndpoints())
                     return value;
-                String endpoint = value.toString();
                 // https://ads-platform.zalo.me/zpads/inboxnative/getads
                 if (endpoint.contains("/zpads/"))
                     return "";

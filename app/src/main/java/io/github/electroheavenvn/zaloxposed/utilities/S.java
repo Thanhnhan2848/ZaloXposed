@@ -57,7 +57,6 @@ public final class S
         trans.put("disableCrashlyticsTitle", new String[] { "Disable Crashlytics", "Tắt Crashlytics" });
         trans.put("autoRecordCallsTitle", new String[] { "Auto-record calls", "Tự ghi âm cuộc gọi" });
         trans.put("customSoundsTitle", new String[] { "Custom sounds", "Âm thanh tuỳ chỉnh" });
-        trans.put("liquidTabBarTitle", new String[] { "Liquid tab bar", "Thanh tab lỏng" });
         trans.put("amoledThemeTitle", new String[] { "AMOLED theme", "Chủ đề AMOLED" });
         trans.put("customFontTitle", new String[] { "Custom font", "Phông chữ tuỳ chỉnh" });
         trans.put("microGSupportTitle", new String[] { "MicroG support", "Hỗ trợ MicroG" });
