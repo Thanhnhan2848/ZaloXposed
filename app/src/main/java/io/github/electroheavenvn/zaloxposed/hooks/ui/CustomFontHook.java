@@ -1,7 +1,9 @@
 package io.github.electroheavenvn.zaloxposed.hooks.ui;
 
+import android.app.Activity;
 import android.app.Application;
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Typeface;
 import android.text.TextPaint;
 import android.widget.TextView;
@@ -29,6 +31,8 @@ import java.util.List;
  */
 public class CustomFontHook extends BaseHook
 {
+    public static final int REQUEST_CODE_PICK_FONT = 3737;
+
     @Override
     public void hook() throws Throwable
     {
@@ -37,6 +41,42 @@ public class CustomFontHook extends BaseHook
         hookChatPaint();
         hookMessageStyle();
         hookApplicationObserver();
+        hookActivityResult();
+    }
+
+    private void hookActivityResult() throws Exception
+    {
+        List<MethodData> methods = bridge.findMethod(FindMethod.create()
+            .matcher(MethodMatcher.create()
+                .declaredClass(Activity.class)
+                .returnType("void")
+                .paramCount(3)
+                .paramTypes("int", "int", "android.content.Intent")));
+        for (MethodData methodData : methods)
+        {
+            try
+            {
+                Method method = methodData.getMethodInstance(classLoader);
+                module.hook(method).intercept(chain ->
+                {
+                    Object result = chain.proceed();
+                    int requestCode = (Integer)chain.getArg(0);
+                    int resultCode = (Integer)chain.getArg(1);
+                    Intent data = (Intent)chain.getArg(2);
+                    if (requestCode == REQUEST_CODE_PICK_FONT
+                        && resultCode == Activity.RESULT_OK
+                        && data != null && data.getData() != null)
+                    {
+                        CustomFont.importFont((Context)chain.getThisObject(), data.getData());
+                    }
+                    return result;
+                });
+            }
+            catch (Throwable t)
+            {
+                Logger.e(t);
+            }
+        }
     }
 
     private void hookTypefaceFactory() throws Exception

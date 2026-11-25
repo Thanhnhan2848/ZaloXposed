@@ -3,7 +3,10 @@ package io.github.electroheavenvn.zaloxposed.utilities;
 import android.app.WallpaperColors;
 import android.app.WallpaperManager;
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.Canvas;
 import android.graphics.Color;
+import android.graphics.drawable.Drawable;
 import android.os.Build;
 
 import java.util.Locale;
@@ -43,7 +46,7 @@ public final class ThemeColors
             int monet = getMonetAccent(context);
             if (monet != 0)
                 return monet;
-            return 0xFF6750A4;
+            return 0xFF0068FF;
         }
         return parse(value, 0xFF0068FF);
     }
@@ -127,6 +130,41 @@ public final class ThemeColors
                     {
                         bestScore = score;
                         best = argb;
+                    }
+                }
+                if (best != 0)
+                    return best;
+            }
+        }
+        catch (Throwable ignored) { }
+
+        // getWallpaperColors() can return null for some launchers/contexts.
+        // Fall back to sampling the actual wallpaper drawable.
+        try
+        {
+            Drawable wallpaper = WallpaperManager.getInstance(context).getDrawable();
+            if (wallpaper != null)
+            {
+                final int size = 48;
+                Bitmap sample = Bitmap.createBitmap(size, size, Bitmap.Config.ARGB_8888);
+                Canvas canvas = new Canvas(sample);
+                wallpaper.setBounds(0, 0, size, size);
+                wallpaper.draw(canvas);
+                int[] pixels = new int[size * size];
+                sample.getPixels(pixels, 0, size, 0, 0, size, size);
+                int best = 0;
+                float bestScore = -1f;
+                for (int pixel : pixels)
+                {
+                    if (Color.alpha(pixel) < 128)
+                        continue;
+                    float[] hsv = new float[3];
+                    Color.colorToHSV(pixel, hsv);
+                    float score = hsv[1] * 1.4f + hsv[2] * 0.6f;
+                    if (score > bestScore)
+                    {
+                        bestScore = score;
+                        best = pixel;
                     }
                 }
                 if (best != 0)

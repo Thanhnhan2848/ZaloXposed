@@ -21,7 +21,9 @@ public final class BlurUtils
         Bitmap output = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
         int[] pixels = new int[width * height];
         int[] temp = new int[pixels.length];
-        output.getPixels(pixels, 0, width, 0, 0, width, height);
+        // Read the SOURCE bitmap - reading from the freshly created output gave
+        // all-zero pixels and produced a fully black blurred image.
+        bitmap.getPixels(pixels, 0, width, 0, 0, width, height);
         boxBlurHorizontal(pixels, temp, width, height, r);
         boxBlurVertical(temp, pixels, width, height, r);
         output.setPixels(pixels, 0, width, 0, 0, width, height);
@@ -46,7 +48,8 @@ public final class BlurUtils
             }
             for (int x = 0; x < width; x++)
             {
-                target[row + x] = Color.rgb(
+                target[row + x] = Color.argb(
+                    clampByte(a / window),
                     clampByte(red / window),
                     clampByte(green / window),
                     clampByte(blue / window));
@@ -77,7 +80,8 @@ public final class BlurUtils
             }
             for (int y = 0; y < height; y++)
             {
-                target[y * width + x] = Color.rgb(
+                target[y * width + x] = Color.argb(
+                    clampByte(a / window),
                     clampByte(red / window),
                     clampByte(green / window),
                     clampByte(blue / window));

@@ -1,5 +1,7 @@
 package io.github.electroheavenvn.zaloxposed.settingsmenu;
 
+import android.app.Activity;
+import android.content.Intent;
 import android.os.Build;
 
 import org.luckypray.dexkit.DexKitBridge;
@@ -16,6 +18,8 @@ import io.github.electroheavenvn.zaloxposed.hooks.functional.ConfigImportExportH
 import io.github.electroheavenvn.zaloxposed.hooks.functional.CustomCallRingtoneHook;
 import io.github.electroheavenvn.zaloxposed.hooks.ui.AccentColorDialog;
 import io.github.electroheavenvn.zaloxposed.hooks.ui.CustomBackgroundHook;
+import io.github.electroheavenvn.zaloxposed.hooks.ui.CustomFontHook;
+import io.github.electroheavenvn.zaloxposed.hooks.ui.LiquidColorDialog;
 import io.github.electroheavenvn.zaloxposed.utilities.Config;
 import io.github.electroheavenvn.zaloxposed.utilities.DexKitCache;
 import io.github.electroheavenvn.zaloxposed.utilities.S;
@@ -184,8 +188,26 @@ public final class SettingsMenu
                     new ListSelectionSettingFeature.Selection("liquidGlassThemeLight", 0),
                     new ListSelectionSettingFeature.Selection("liquidGlassThemeDark", 1)
                 )),
+                new OptionSettingFeature("liquidColorTitle", "liquidColorDesc", (item, context) ->
+                {
+                    if (context instanceof Activity activity)
+                        LiquidColorDialog.show(activity);
+                }),
                 new SwitchSettingFeature("amoledThemeTitle", "", Config.KEY_AMOLED_THEME),
                 new SwitchSettingFeature("customFontTitle", "", Config.KEY_CUSTOM_FONT_ENABLED),
+                new OptionSettingFeature("pickFontTitle", "pickFontDesc", (item, context) ->
+                {
+                    if (context instanceof Activity activity)
+                    {
+                        Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
+                        intent.addCategory(Intent.CATEGORY_OPENABLE);
+                        intent.setType("*/*");
+                        intent.putExtra(Intent.EXTRA_MIME_TYPES, new String[] {
+                            "font/ttf", "font/otf", "application/x-font-ttf", "application/x-font-otf" });
+                        intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+                        activity.startActivityForResult(intent, CustomFontHook.REQUEST_CODE_PICK_FONT);
+                    }
+                }),
                 new OptionSettingFeature("accentColorTitle", "accentColorDesc", (item, context) ->
                     AccentColorDialog.show(context))
             ))

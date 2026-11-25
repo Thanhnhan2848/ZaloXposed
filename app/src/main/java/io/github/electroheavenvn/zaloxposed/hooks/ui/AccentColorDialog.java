@@ -208,7 +208,7 @@ public final class AccentColorDialog
             int color = monet ? ThemeColors.getMonetAccent(activity)
                 : ThemeColors.parse(value, 0xFF0068FF);
             if (color == 0)
-                color = 0xFF6750A4;
+                color = 0xFF0068FF;
 
             FrameLayout swatch = new FrameLayout(activity);
             ImageView circle = new ImageView(activity);

@@ -388,7 +388,7 @@ public class LiquidGlassTabBarHook extends BaseHook
         private float lastScrollY = 0f;
         private boolean trackingScroll = false;
 
-        private final ViewTreeObserver.OnPreDrawListener preDrawListener = () -> true;
+        private final ViewTreeObserver.OnPreDrawListener preDrawListener;
 
         private final Runnable syncPoller = new Runnable()
         {
@@ -406,6 +406,26 @@ public class LiquidGlassTabBarHook extends BaseHook
         {
             this.root = root;
             this.origTabBar = origTabBar;
+            this.preDrawListener = () ->
+            {
+                if (!attached)
+                    return true;
+                // Zalo can re-show the stock tab bar on resume/config changes.
+                // Force it back to GONE cheaply (only writes when it actually changed).
+                if (origTabBar != null && origTabBar.getVisibility() != View.GONE)
+                {
+                    origTabBar.setVisibility(View.GONE);
+                    origTabBar.setAlpha(0f);
+                    origTabBar.setTranslationY(10000f);
+                }
+                if (origWrapperBar != null && origWrapperBar.getVisibility() != View.GONE)
+                {
+                    origWrapperBar.setVisibility(View.GONE);
+                    origWrapperBar.setAlpha(0f);
+                    origWrapperBar.setTranslationY(10000f);
+                }
+                return true;
+            };
         }
 
         void onActivityTouchEvent(MotionEvent ev)
@@ -948,6 +968,7 @@ public class LiquidGlassTabBarHook extends BaseHook
             "uniform float uInflate;" +
             "uniform float uDensity;" +
             "uniform float uDark;" +
+            "uniform float3 uAccent;" +
             "float sdRoundBox(float2 p, float2 b, float r) {" +
             "  float2 q = abs(p) - b + r;" +
             "  return length(max(q, 0.0)) + min(max(q.x, q.y), 0.0) - r;" +
@@ -972,7 +993,7 @@ public class LiquidGlassTabBarHook extends BaseHook
             "  float inkLight = smoothstep(0.32, 0.08, luma) * (1.0 - smoothstep(0.16, 0.30, sat));" +
             "  float inkDark  = smoothstep(0.68, 0.92, luma) * (1.0 - smoothstep(0.16, 0.30, sat));" +
             "  float inkMask = mix(inkLight, inkDark, isDarkMode);" +
-            "  float3 activeBlue = mix(float3(0.0, 0.478, 1.0), float3(0.04, 0.52, 1.0), isDarkMode);" +
+            "  float3 activeBlue = uAccent;" +
             "  return mix(col, activeBlue, inkMask);" +
             "}" +
             "half4 evalBarCapsule(float2 fragCoord, float2 barC, float2 barH, float dBar) {" +
@@ -1556,6 +1577,11 @@ public class LiquidGlassTabBarHook extends BaseHook
                 shader.setFloatUniform("uInflate", inflateProgress);
                 shader.setFloatUniform("uDensity", density);
                 shader.setFloatUniform("uDark", dark ? 1f : 0f);
+                int liquidAccent = liquidAccent(dark);
+                shader.setFloatUniform("uAccent",
+                    Color.red(liquidAccent) / 255f,
+                    Color.green(liquidAccent) / 255f,
+                    Color.blue(liquidAccent) / 255f);
                 node.setRenderEffect(RenderEffect.createRuntimeShaderEffect(shader, "content"));
 
                 canvas.drawRenderNode(node);
@@ -1565,7 +1591,7 @@ public class LiquidGlassTabBarHook extends BaseHook
                 drawGlassForeground(canvas, dark, false);
                 if (!dropletRect.isEmpty())
                 {
-                    int activeBlue = dark ? 0xFF0A84FF : 0xFF007AFF;
+                    int activeBlue = liquidAccent(dark);
                     canvas.save();
                     clipPath.reset();
                     clipPath.addRoundRect(dropletRect, dropRadius, dropRadius, Path.Direction.CW);
@@ -1604,7 +1630,9 @@ public class LiquidGlassTabBarHook extends BaseHook
 
             float cx = capsuleRect.left + currentTabPos * tabW;
             float cy = capsuleRect.centerY();
-            out.set(cx - w * 0.5f, cy - h * 0.5f, cx + w * 0.5f, cy + h * 0.5f);
+            // Enlarge the colored sliding overlay by 1px on every side.
+            out.set(cx - w * 0.5f - 1f, cy - h * 0.5f - 1f,
+                cx + w * 0.5f + 1f, cy + h * 0.5f + 1f);
         }
 
         @SuppressLint("ClickableViewAccessibility")
@@ -1735,6 +1763,20 @@ public class LiquidGlassTabBarHook extends BaseHook
             animating = true;
             lastFrameMs = SystemClock.uptimeMillis();
             postOnAnimation(animTick);
+        }
+
+        private static int liquidAccent(boolean dark)
+        {
+            String custom = Config.getLiquidGlassColor();
+            if (custom != null && !custom.isEmpty())
+            {
+                try
+                {
+                    return Color.parseColor(custom);
+                }
+                catch (Throwable ignored) { }
+            }
+            return dark ? 0xFF0A84FF : 0xFF007AFF;
         }
 
         private final Runnable animTick = new Runnable()

@@ -32,6 +32,8 @@ public final class S
         trans.put("liquidGlassThemeDesc", new String[] { "Choose Light (white & blue) or Dark (charcoal glass)", "Chọn nền Sáng (trắng xanh) hoặc Tối (kính than)" });
         trans.put("liquidGlassThemeLight", new String[] { "Light", "Sáng" });
         trans.put("liquidGlassThemeDark", new String[] { "Dark", "Tối" });
+        trans.put("liquidColorTitle", new String[] { "Liquid Glass color", "Màu thanh Liquid Glass" });
+        trans.put("liquidColorDesc", new String[] { "Custom accent color for the sliding droplet", "Màu nhấn tuỳ chỉnh cho giọt trượt" });
         trans.put("bgOpacityTitle", new String[] { "Background opacity", "Độ trong nền" });
         trans.put("bgBlurTitle", new String[] { "Background blur", "Độ mờ nền" });
         trans.put("bgSourceTitle", new String[] { "Background source", "Nguồn ảnh nền" });
@@ -59,6 +61,8 @@ public final class S
         trans.put("customSoundsTitle", new String[] { "Custom sounds", "Âm thanh tuỳ chỉnh" });
         trans.put("amoledThemeTitle", new String[] { "AMOLED theme", "Chủ đề AMOLED" });
         trans.put("customFontTitle", new String[] { "Custom font", "Phông chữ tuỳ chỉnh" });
+        trans.put("pickFontTitle", new String[] { "Import font file", "Nhập file font" });
+        trans.put("pickFontDesc", new String[] { "Pick a .ttf or .otf file from your device", "Chọn file .ttf hoặc .otf từ máy" });
         trans.put("microGSupportTitle", new String[] { "MicroG support", "Hỗ trợ MicroG" });
         trans.put("accentColorTitle", new String[] { "Accent color", "Màu nhấn" });
         trans.put("accentColorDesc", new String[] { "Choose module accent color", "Chọn màu nhấn của module" });
