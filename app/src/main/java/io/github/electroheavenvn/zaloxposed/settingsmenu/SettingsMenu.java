@@ -180,6 +180,10 @@ public final class SettingsMenu
             )),
             new SettingSubCategory("uiCategoryTitle", List.of(
                 new SwitchSettingFeature("liquidGlassTabBarTitle", "liquidGlassTabBarDesc", Config.KEY_ENABLE_LIQUID_GLASS_TABBAR),
+                new ListSelectionSettingFeature("liquidGlassThemeTitle", "liquidGlassThemeDesc", Config.KEY_LIQUID_GLASS_THEME, List.of(
+                    new ListSelectionSettingFeature.Selection("liquidGlassThemeLight", 0),
+                    new ListSelectionSettingFeature.Selection("liquidGlassThemeDark", 1)
+                )),
                 new SwitchSettingFeature("liquidTabBarTitle", "", Config.KEY_ENABLE_LIQUID_UI),
                 new SwitchSettingFeature("amoledThemeTitle", "", Config.KEY_AMOLED_THEME),
                 new SwitchSettingFeature("customFontTitle", "", Config.KEY_CUSTOM_FONT_ENABLED),

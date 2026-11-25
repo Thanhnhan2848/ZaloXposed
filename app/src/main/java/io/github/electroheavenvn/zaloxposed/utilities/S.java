@@ -26,8 +26,12 @@ public final class S
         trans.put("adsAndTrackingCategoryDesc", new String[] { "Hide ads and limit tracking", "Ẩn quảng cáo và hạn chế theo dõi" });
         trans.put("uiCategoryTitle", new String[] { "User interface", "Giao diện" });
         trans.put("uiCategoryDesc", new String[] { "Customize user interface", "Tùy giao diện ứng dụng" });
-        trans.put("liquidGlassTabBarTitle", new String[] { "Liquid glass tab bar", "Thanh tab kính lỏng" });
-        trans.put("liquidGlassTabBarDesc", new String[] { "Floating rounded bar with a sliding highlight", "Thanh tab bo tròn nổi với vùng sáng trượt" });
+        trans.put("liquidGlassTabBarTitle", new String[] { "TabBar Liquid Glass", "TabBar Liquid Glass" });
+        trans.put("liquidGlassTabBarDesc", new String[] { "Floating rounded Liquid Glass TabBar with interactive sliding droplet effect", "Thanh TabBar nổi bo tròn Liquid Glass với hiệu ứng giọt trượt tương tác" });
+        trans.put("liquidGlassThemeTitle", new String[] { "Liquid Glass theme", "Giao diện Liquid Glass (Sáng / Tối)" });
+        trans.put("liquidGlassThemeDesc", new String[] { "Choose Light (white & blue) or Dark (charcoal glass)", "Chọn nền Sáng (trắng xanh) hoặc Tối (kính than)" });
+        trans.put("liquidGlassThemeLight", new String[] { "Light", "Sáng" });
+        trans.put("liquidGlassThemeDark", new String[] { "Dark", "Tối" });
         trans.put("bgOpacityTitle", new String[] { "Background opacity", "Độ trong nền" });
         trans.put("bgBlurTitle", new String[] { "Background blur", "Độ mờ nền" });
         trans.put("bgSourceTitle", new String[] { "Background source", "Nguồn ảnh nền" });
