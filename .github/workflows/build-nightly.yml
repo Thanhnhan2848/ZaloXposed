@@ -1,4 +1,4 @@
-name: Build and publish nightly APK
+name: Build and Publish nightly APK
 
 on:
   push:
